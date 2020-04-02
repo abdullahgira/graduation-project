@@ -26,6 +26,7 @@ app.use(helmet());
 app.use(morgan('combined', { stream: winston.stream }));
 app.use(bodyParser.json());
 
+app.use('/uploads', express.static('uploads'));
 app.use('/api/user', require('./api/UserController'));
 app.use('/api/student', require('./api/StudentController'));
 

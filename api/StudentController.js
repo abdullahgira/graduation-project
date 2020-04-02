@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const multer = require('multer');
 
 const Student = require('../model/Student');
 const SchemaValidation = require('../validation/SchemaValidation');
@@ -9,8 +10,12 @@ const { isAdminModeratorOrDoctor } = require('../middleware/authorization');
 
 const studentService = new StudentService(Student, SchemaValidation, StudentValidation, null);
 
-router.post('/new', isAdminModeratorOrDoctor, async (req, res) => {
-    const student = await studentService.addStudent(req.body, 'video link placeholder');
+const storageConfig = require('../config/diskStorageConfig');
+const upload = multer({ storage: storageConfig });
+
+router.post('/new', isAdminModeratorOrDoctor, upload.single('video'), async (req, res) => {
+    const videoLink = req.file && `uploads/${req.file.filename}`;
+    const student = await studentService.addStudent(req.body, videoLink);
     res.json(student);
 });
 
