@@ -26,6 +26,8 @@ app.use(helmet());
 app.use(morgan('combined', { stream: winston.stream }));
 app.use(bodyParser.json());
 
+app.use('/api/user', require('./api/UserController'));
+
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
