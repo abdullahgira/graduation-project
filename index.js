@@ -27,6 +27,7 @@ app.use(morgan('combined', { stream: winston.stream }));
 app.use(bodyParser.json());
 
 app.use('/api/user', require('./api/UserController'));
+app.use('/api/student', require('./api/StudentController'));
 
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     res.locals.message = err.message;

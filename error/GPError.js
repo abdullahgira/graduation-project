@@ -29,3 +29,11 @@ exports.InvalidCredentials = class InvalidCredentials extends Error {
         this.statusCode = 406;
     }
 }
+
+exports.DuplicateError = class DuplicateError extends Error {
+    constructor(message='User already exists') {
+        super(message);
+        this.name = 'DuplicateError';
+        this.statusCode = 406;
+    }
+}

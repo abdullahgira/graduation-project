@@ -8,7 +8,7 @@ class UserService {
 
     async register(userDTO) {
         await this.SchemaValidation.validateNewUser(userDTO);
-        const user = await this.User({
+        const user = new this.User({
             ...userDTO,
             password: ''
         });

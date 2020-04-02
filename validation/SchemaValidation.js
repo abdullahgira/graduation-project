@@ -5,7 +5,7 @@ class Validation {
     static async validateNewUser(userDTO) {
         const schema = Joi.object({
             name: Joi.string()
-                .min(5)
+                .min(2)
                 .max(255)
                 .required(),
             email: Joi.string()
@@ -39,6 +39,25 @@ class Validation {
                 .required(),
         });
         const { error } = schema.validate(userDTO);
+        if (error) throw new GPError.ValidationError(error);
+    }
+
+    static async validateNewStudent(studentDTO) {
+        const schema = Joi.object({
+            name: Joi.string()
+                .min(2)
+                .max(255)
+                .required(),
+            email: Joi.string()
+                .email({ minDomainSegments: 2 })
+                .max(255)
+                .required(),
+            department: Joi.string()
+                .min(2)
+                .max(255)
+                .required()
+        });
+        const { error } = schema.validate(studentDTO);
         if (error) throw new GPError.ValidationError(error);
     }
 }
