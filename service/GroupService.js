@@ -1,8 +1,10 @@
 class GroupService {
 
-    constructor(Group, SchemaValidation) {
+    constructor(Group, SchemaValidation, GroupValidation, StudentValidation) {
         this.Group = Group;
         this.SchemaValidation = SchemaValidation;
+        this.GroupValidation = GroupValidation;
+        this.StudentValidation = StudentValidation;
     }
 
     /**
@@ -21,6 +23,20 @@ class GroupService {
         return group;
     }
 
+    /**
+     * 
+     * @param {mongoose.Schema.Types.ObjectId} groupId a valid group id
+     * @param {mongoose.Schema.Types.ObjectId} studentId a valid id for the creator of the group
+     */
+    async addStudent(groupId, studentId) {
+        await this.StudentValidation.validateStudentExists(studentId);
+        const group = await this.GroupValidation.validateGroupExistsAndReturn(groupId);
+
+        group.students.push(studentId);
+        await group.save();
+
+        return group;
+    }
 }
 
 module.exports = GroupService;

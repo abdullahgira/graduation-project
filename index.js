@@ -39,5 +39,11 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     res.status(err.statusCode || 500).json({ error: `${err.message}` });
 });
 
+app.use((req, res, next) => { // eslint-disable-line no-unused-vars
+    const ERR_MSG = `NotFound: there is no handler for this url`;
+    winston.error(`404 - ${ERR_MSG} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+    res.status(404).json({ error: ERR_MSG });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => winston.info(`Listening on port ${3000}`));

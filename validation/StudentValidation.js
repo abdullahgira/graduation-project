@@ -8,7 +8,11 @@ class StudentValidation {
     static async validateStudentDoesntExist(email) {
         const student = await Student.findOne({ email });
         if (student) throw new GPError.DuplicateError();
-        return;
+    }
+
+    static async validateStudentExists(studentId) {
+        const student = await Student.findById(studentId);
+        if (!student) throw new GPError.InvalidId(`Invalid student id`);
     }
 
 }

@@ -37,3 +37,11 @@ exports.DuplicateError = class DuplicateError extends Error {
         this.statusCode = 406;
     }
 }
+
+exports.InvalidId = class InvalidId extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'InvalidId';
+        this.statusCode = 406;
+    }
+}
