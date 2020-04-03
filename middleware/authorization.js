@@ -35,3 +35,9 @@ exports.isAdminModeratorOrDoctor = (req, res, next) => {
     if (req.user.isAdmin || req.user.role === 'moderator' || req.user.role === 'doctor') next();
     else throw new GPError.Forbidden();
 }
+
+exports.isDoctor = (req, res, next) => {
+    _getUser(req);
+    if (req.user.role === 'doctor') next();
+    else throw new GPError.Forbidden();
+}
