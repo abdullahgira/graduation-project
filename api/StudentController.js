@@ -19,4 +19,9 @@ router.post('/new', isAdminModeratorOrDoctor, upload.single('video'), async (req
     res.json(student);
 });
 
+router.get('/search', isAdminModeratorOrDoctor, async (req, res) => {
+    const students = await studentService.findStudents(req.query.name, req.query.department);
+    res.json(students);
+});
+
 module.exports = router;

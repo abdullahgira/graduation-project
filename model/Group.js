@@ -13,7 +13,10 @@ const groupSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
     },
-    students: [Schema.Types.ObjectId],
+    students: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Student'
+    }],
     date: {
         type: Date,
         default: Date.now()

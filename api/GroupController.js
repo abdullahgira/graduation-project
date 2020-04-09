@@ -20,4 +20,9 @@ router.post('/:groupId/add/:studentId', isDoctor, async (req, res) => {
     res.json(group);
 });
 
+router.get('/', isDoctor, async (req, res) => {
+    const groups = await groupService.getGroups(req.user._id);
+    res.json(groups);
+});
+
 module.exports = router;

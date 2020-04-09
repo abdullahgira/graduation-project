@@ -1,5 +1,5 @@
 class StudentService {
-    
+
     constructor(Student, SchemaValidation, StudentValidation, GPError) {
         this.Student = Student;
         this.SchemaValidation = SchemaValidation;
@@ -24,6 +24,23 @@ class StudentService {
         return student;
     }
 
+    async getAllStudnets() {
+        const students = await this.Student.find();
+        return students;
+    }
+
+    async findStudents(name, department) {
+        const nameRegExp = new RegExp(name);
+        const departmentRegExp = new RegExp(department);
+        let students;
+        if (name && department)
+            students = await this.Student.find({ name: { $regex: nameRegExp, $options: 'ig' }, department: { $regex: departmentRegExp, $options: 'ig' } });
+        else if (name)
+            students = await this.Student.find({ name: { $regex: nameRegExp, $options: 'ig' } });
+        else if (department)
+            students = await this.Student.find({ department: { $regex: departmentRegExp, $options: 'ig' } });
+        return students;
+    }
 }
 
 module.exports = StudentService;

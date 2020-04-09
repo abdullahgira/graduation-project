@@ -8,6 +8,18 @@ class GroupService {
     }
 
     /**
+     * Get all groups created by that doctor
+     * 
+     * @param {mongoose.Schema.Types.ObjectId} doctorId 
+     */
+    async getGroups(doctorId) {
+        const groups = await this.Group
+            .find({ doctor: doctorId })
+            .populate('students');
+        return groups;
+    }
+
+    /**
      * 
      * @param {mongoose.Schema.Types.ObjectId} doctorId a valid id for the creator of the group
      * @param {Object} groupDTO 
