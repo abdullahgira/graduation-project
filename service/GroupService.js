@@ -40,11 +40,12 @@ class GroupService {
      * @param {mongoose.Schema.Types.ObjectId} groupId a valid group id
      * @param {mongoose.Schema.Types.ObjectId} studentId a valid id for the creator of the group
      */
-    async addStudent(groupId, studentId) {
-        await this.StudentValidation.validateStudentExists(studentId);
+    async addStudent(groupId, studentDTO) {
+        await this.SchemaValidation.validateAddStudentToGroup(studentDTO);
+        const student = await this.StudentValidation.validateStudentExists(studentDTO.studentId);
         const group = await this.GroupValidation.validateGroupExistsAndReturn(groupId);
 
-        group.students.push(studentId);
+        group.students.push(student.id);
         await group.save();
 
         return group;

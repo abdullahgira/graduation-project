@@ -13,6 +13,7 @@ class StudentValidation {
     static async validateStudentExists(studentId) {
         const student = await Student.findById(studentId);
         if (!student) throw new GPError.InvalidId(`Invalid student id`);
+        return student
     }
 
 }

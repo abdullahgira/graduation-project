@@ -76,6 +76,16 @@ class Validation {
         const { error } = schema.validate(groupDTO);
         if (error) throw new GPError.ValidationError(error);
     }
+
+    static async validateAddStudentToGroup(studentDTO) {
+        const schema = Joi.object({
+            studentId: Joi.string()
+                .min(24)
+                .max(24)
+        });
+        const { error } = schema.validate(studentDTO);
+        if (error) throw new GPError.ValidationError(error);
+    }
 }
 
 module.exports = Validation;

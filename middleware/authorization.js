@@ -22,21 +22,19 @@ exports.isAdmin = (req, res, next) => {
     else throw new GPError.Forbidden();
 }
 
-exports.isAdminOrModerator = (req, res, next) => {
+exports.isModerator = (req, res, next) => {
     _getUser(req);
     if (req.user.isAdmin || req.user.role === 'moderator') next();
     else throw new GPError.Forbidden();
 }
 
-// exports.isModerator = (req, res, next) => {}
-
-exports.isAdminModeratorOrDoctor = (req, res, next) => {
+exports.isDoctor = (req, res, next) => {
     _getUser(req);
     if (req.user.isAdmin || req.user.role === 'moderator' || req.user.role === 'doctor') next();
     else throw new GPError.Forbidden();
 }
 
-exports.isDoctor = (req, res, next) => {
+exports.isOnlyDoctor = (req, res, next) => {
     _getUser(req);
     if (req.user.role === 'doctor') next();
     else throw new GPError.Forbidden();

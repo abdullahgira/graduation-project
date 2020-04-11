@@ -6,21 +6,21 @@ const GroupValidation = require('../validation/GroupValidation');
 const StudentValidation = require('../validation/StudentValidation');
 const GroupService = require('../service/GroupService');
 
-const { isDoctor } = require('../middleware/authorization');
+const { isOnlyDoctor } = require('../middleware/authorization');
 
 const groupService = new GroupService(Group, SchemaValidation, GroupValidation, StudentValidation);
 
-router.post('/new', isDoctor, async (req, res) => {
+router.post('/new', isOnlyDoctor, async (req, res) => {
     const group = await groupService.createGroup(req.user._id, req.body);
     res.json(group);
 });
 
-router.post('/:groupId/add/:studentId', isDoctor, async (req, res) => {
-    const group = await groupService.addStudent(req.params.groupId, req.params.studentId);
+router.post('/:groupId/add', isOnlyDoctor, async (req, res) => {
+    const group = await groupService.addStudent(req.params.groupId, req.body);
     res.json(group);
 });
 
-router.get('/', isDoctor, async (req, res) => {
+router.get('/', isOnlyDoctor, async (req, res) => {
     const groups = await groupService.getGroups(req.user._id);
     res.json(groups);
 });

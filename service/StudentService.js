@@ -33,12 +33,16 @@ class StudentService {
         const nameRegExp = new RegExp(name);
         const departmentRegExp = new RegExp(department);
         let students;
+        
         if (name && department)
             students = await this.Student.find({ name: { $regex: nameRegExp, $options: 'ig' }, department: { $regex: departmentRegExp, $options: 'ig' } });
         else if (name)
             students = await this.Student.find({ name: { $regex: nameRegExp, $options: 'ig' } });
         else if (department)
             students = await this.Student.find({ department: { $regex: departmentRegExp, $options: 'ig' } });
+        else 
+            students = await this.Student.find();
+
         return students;
     }
 }
