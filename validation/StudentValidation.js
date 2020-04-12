@@ -7,7 +7,7 @@ class StudentValidation {
     
     static async validateStudentDoesntExist(email) {
         const student = await Student.findOne({ email });
-        if (student) throw new GPError.DuplicateError();
+        if (student) throw new GPError.DuplicateError(`Student already exists`);
     }
 
     static async validateStudentExists(studentId) {

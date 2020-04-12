@@ -44,6 +44,7 @@ class GroupService {
         await this.SchemaValidation.validateAddStudentToGroup(studentDTO);
         const student = await this.StudentValidation.validateStudentExists(studentDTO.studentId);
         const group = await this.GroupValidation.validateGroupExistsAndReturn(groupId);
+        await this.GroupValidation.vlaidateStudentIsNotInGroup(groupId, student.id);
 
         group.students.push(student.id);
         await group.save();

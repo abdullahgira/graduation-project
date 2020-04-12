@@ -11,6 +11,14 @@ class GroupValidation {
         return group;
     }
 
+    static async vlaidateStudentIsNotInGroup(groupId, studentId) {
+        const group = await Group.findById(groupId);
+        for (let student of group.students) {
+            if (student == studentId) 
+                throw new GPError.DuplicateError(`Student is already in the group`);
+        }
+    }
+
 }
 
 module.exports = GroupValidation;
