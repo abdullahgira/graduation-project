@@ -45,6 +45,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/user', require('./api/UserController'));
 app.use('/api/student', require('./api/StudentController'));
 app.use('/api/group', require('./api/GroupController'));
+app.use('/api/video/playground/', require('./api/VidoPlayground'));
 
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     res.locals.message = err.message;
