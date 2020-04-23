@@ -15,7 +15,7 @@ const groupSchema = new Schema({
     },
     students: [{
         type: Schema.Types.ObjectId,
-        ref: 'Student'
+        ref: 'StudentGroup'
     }],
     date: {
         type: Date,

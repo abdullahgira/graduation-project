@@ -1,7 +1,8 @@
 class GroupService {
 
-    constructor(Group, SchemaValidation, GroupValidation, StudentValidation) {
+    constructor(Group, StudentGroup, SchemaValidation, GroupValidation, StudentValidation) {
         this.Group = Group;
+        this.StudentGroup = StudentGroup;
         this.SchemaValidation = SchemaValidation;
         this.GroupValidation = GroupValidation;
         this.StudentValidation = StudentValidation;
@@ -38,7 +39,7 @@ class GroupService {
     /**
      * 
      * @param {mongoose.Schema.Types.ObjectId} groupId a valid group id
-     * @param {mongoose.Schema.Types.ObjectId} studentId a valid id for the creator of the group
+     * @param {studentDTO} studentDTO that contains a valid id for the student
      */
     async addStudent(groupId, studentDTO) {
         await this.SchemaValidation.validateAddStudentToGroup(studentDTO);
@@ -46,8 +47,16 @@ class GroupService {
         const group = await this.GroupValidation.validateGroupExistsAndReturn(groupId);
         await this.GroupValidation.vlaidateStudentIsNotInGroup(groupId, student.id);
 
-        group.students.push(student.id);
+        const studentGroup = await new this.StudentGroup({
+            group: groupId,
+            student: student.id
+        }).save();
+
+        group.students.push(studentGroup.id);
+        student.groups.push(studentGroup.id);
+
         await group.save();
+        await student.save();
 
         return group;
     }

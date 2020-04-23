@@ -12,9 +12,9 @@ class GroupValidation {
     }
 
     static async vlaidateStudentIsNotInGroup(groupId, studentId) {
-        const group = await Group.findById(groupId);
+        const group = await Group.findById(groupId).populate('students');
         for (let student of group.students) {
-            if (student == studentId) 
+            if (student._id == studentId) 
                 throw new GPError.DuplicateError(`Student is already in the group`);
         }
     }

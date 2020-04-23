@@ -27,6 +27,10 @@ const studentSchema = new Schema({
         minlength: 1,
         maxlength: 500
     },
+    groups: [{
+        type: Schema.Types.ObjectId,
+        ref: 'StudentGroup'
+    }],
     date: {
         type: Date,
         default: Date.now()
