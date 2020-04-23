@@ -18,19 +18,19 @@ const _getUser = (req) => {
 
 exports.isAdmin = (req, res, next) => {
     _getUser(req);
-    if (req.user.isAdmin) next();
+    if (req.user.role === 'admin') next();
     else throw new GPError.Forbidden();
 }
 
 exports.isModerator = (req, res, next) => {
     _getUser(req);
-    if (req.user.isAdmin || req.user.role === 'moderator') next();
+    if (req.user.role === 'admin' || req.user.role === 'moderator') next();
     else throw new GPError.Forbidden();
 }
 
 exports.isDoctor = (req, res, next) => {
     _getUser(req);
-    if (req.user.isAdmin || req.user.role === 'moderator' || req.user.role === 'doctor') next();
+    if (req.user.role === 'admin' || req.user.role === 'moderator' || req.user.role === 'doctor') next();
     else throw new GPError.Forbidden();
 }
 

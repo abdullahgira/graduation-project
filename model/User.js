@@ -39,6 +39,14 @@ const userSchema = new Schema({
     }
 });
 
+userSchema.post('save', function (error, doc, next) {
+    if (error.name === 'MongoError' && error.code === 11000) {
+        next(new Error('User already exists'));
+    } else {
+        next(error);
+    }
+});
+
 userSchema.methods.hashPassword = async password => {
     const salt = await bcrypt.genSalt(10);
     return await bcrypt.hash(password, salt);

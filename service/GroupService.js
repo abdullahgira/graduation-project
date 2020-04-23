@@ -16,7 +16,7 @@ class GroupService {
     async getGroups(doctorId) {
         const groups = await this.Group
             .find({ doctor: doctorId })
-            .populate('students');
+            .populate({ path: 'students', populate: { path: 'student' }});
         return groups;
     }
 
@@ -58,6 +58,26 @@ class GroupService {
         await group.save();
         await student.save();
 
+        return group;
+    }
+    
+    /**
+     * Get the group students and push todays date in the attendance column
+     * and mark all students as absent
+     * 
+     * @param {mongoose.Schema.Types.ObjectId} groupId 
+     */
+    async addNewAttendanceRecord(groupId) {
+        await this.GroupValidation.validateGroupExistsAndReturn(groupId);
+        const group = await this.Group.findById(groupId).populate('students');
+
+        const today = Date.now();
+        group.students.forEach(async student => {
+            student.attendance.push({ date: today });
+            await student.save();
+        });
+
+        await group.save();
         return group;
     }
 }

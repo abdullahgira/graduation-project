@@ -14,7 +14,10 @@ const studentGroupSchema = new Schema({
         ref: 'Student'
     },
     attendance: [{
-        attended: Boolean,
+        attended: {
+            type: Boolean,
+            default: false
+        },
         date: Date
     }]
 });

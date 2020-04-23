@@ -26,4 +26,9 @@ router.get('/', isOnlyDoctor, async (req, res) => {
     res.json(groups);
 });
 
+router.post('/:groupId/new-attendance-record', isOnlyDoctor, async (req, res) => {
+    const group = await groupService.addNewAttendanceRecord(req.params.groupId);
+    res.json(group);
+});
+
 module.exports = router;
