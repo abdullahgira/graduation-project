@@ -1,7 +1,8 @@
 class GroupService {
 
-    constructor(Group, StudentGroup, SchemaValidation, GroupValidation, StudentValidation) {
+    constructor(Group, mongoose, StudentGroup, SchemaValidation, GroupValidation, StudentValidation) {
         this.Group = Group;
+        this.mongoose = mongoose;
         this.StudentGroup = StudentGroup;
         this.SchemaValidation = SchemaValidation;
         this.GroupValidation = GroupValidation;
@@ -72,14 +73,84 @@ class GroupService {
         const group = await this.Group.findById(groupId).populate('students');
 
         const today = Date.now();
+        const _id = this.mongoose.Types.ObjectId(); // common id for that attendance to query the students later
+
+        group.attendance.unshift({ _id, date: today });
         group.students.forEach(async student => {
-            student.attendance.push({ date: today });
+            student.attendance.unshift({ _id, date: today });
             await student.save();
         });
 
         await group.save();
         return group;
     }
+
+    /**
+     * Sends the image to the face recognition model
+     * and receives the id of the student. This id refers to a StudentGroup instance
+     * 
+     * @param {String} imageLink the student image
+     */
+    async recordStudentAttendance(imageLink) {
+        // connect with the face recognition service here
+        // const response = await axios.post('/get-student', { image: imageLink });
+        // const studentId = response.data.studentId;
+        
+        if (!studentId) {
+            throw new this.GPError.ValidationError('Un recognized face');
+        }
+
+        const student = await this.StudentGroup.findById(studentId);
+        student.attendance[0].attended = true;
+
+        await student.save();
+        return student;
+    }
+
+    async getAttendees(groupId, attendanceId) {
+        await this.GroupValidation.validateGroupExistsAndReturn(groupId);
+        const group = await this.Group.findById(groupId).populate({
+            path: 'students',
+            populate: { path: 'student' }
+        });
+        const attendees = [];
+        group.students.filter(student => {
+            for (let i = 0; i < student.attendance.length; i++) {
+                if (student.attendance[i]._id.equals(attendanceId)) {
+                    if (student.attendance[i].attended) {
+                        attendees.push(student.student); // the .student is the student information
+                    }
+                    break;
+                }
+            }
+        });
+        return attendees;
+    }
+
+    async getAbsent(groupId, attendanceId) {
+        await this.GroupValidation.validateGroupExistsAndReturn(groupId);
+        const group = await this.Group.findById(groupId).populate({
+            path: 'students',
+            populate: { path: 'student' }
+        });
+        const absent = [];
+        group.students.forEach(student => {
+            for (let i = 0; i < student.attendance.length; i++) {
+                if (student.attendance[i]._id.equals(attendanceId)) {
+                    if (!student.attendance[i].attended) {
+                        absent.push(student.student); // the .student is the student information
+                    }
+                    break;
+                }
+            }
+        });
+        return absent;
+    }
+
+    async getGroupAttendance(groupId) {
+        const group = await this.GroupValidation.validateGroupExistsAndReturn(groupId);
+        return group.attendance;
+    }    
 }
 
 module.exports = GroupService;

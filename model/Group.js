@@ -17,6 +17,9 @@ const groupSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'StudentGroup'
     }],
+    attendance: [{
+        date: Date
+    }],
     date: {
         type: Date,
         default: Date.now()
