@@ -113,7 +113,6 @@ class GroupService {
         student.attendance[0].attended = true;
 
         await student.save();
-        console.log(student)
         return student;
     }
 

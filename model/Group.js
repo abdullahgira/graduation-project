@@ -18,7 +18,7 @@ const groupSchema = new Schema({
         ref: 'StudentGroup'
     }],
     attendance: [{
-        date: Date
+        date: String
     }],
     date: {
         type: Date,
