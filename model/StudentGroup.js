@@ -18,7 +18,7 @@ const studentGroupSchema = new Schema({
             type: Boolean,
             default: false
         },
-        date: Date
+        date: String
     }]
 });
 
