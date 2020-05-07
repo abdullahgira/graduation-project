@@ -77,11 +77,11 @@ class GroupService {
      * 
      * @param {mongoose.Schema.Types.ObjectId} groupId 
      */
-    async addNewAttendanceRecord(groupId) {
+    async addNewAttendanceRecord(groupId, date) {
         await this.GroupValidation.validateGroupExistsAndReturn(groupId);
         const group = await this.Group.findById(groupId).populate('students');
 
-        const today = Date.now();
+        const today = date;
         const _id = this.mongoose.Types.ObjectId(); // common id for that attendance to query the students later
 
         group.attendance.unshift({ _id, date: today });

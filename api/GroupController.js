@@ -48,7 +48,8 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/:groupId/new-attendance-record', async (req, res) => {
-    const group = await groupService.addNewAttendanceRecord(req.params.groupId);
+    if (!req.body.date) throw new Error('Date is required');
+    const group = await groupService.addNewAttendanceRecord(req.params.groupId, req.body.date);
     res.json(group);
 });
 
