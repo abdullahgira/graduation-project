@@ -29,10 +29,6 @@ const userSchema = new Schema({
         type: String,
         enum: ['admin', 'moderator', 'doctor']
     },
-    isAdmin: {
-        type: Boolean,
-        defaul: false
-    },
     date: {
         type: Date,
         default: Date.now()

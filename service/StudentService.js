@@ -1,10 +1,11 @@
 class StudentService {
 
-    constructor(Student, SchemaValidation, StudentValidation, GPError) {
+    constructor(Student, SchemaValidation, StudentValidation, GPError, ModelRequests) {
         this.Student = Student;
         this.SchemaValidation = SchemaValidation;
         this.StudentValidation = StudentValidation;
         this.GPError = GPError;
+        this.ModelRequests = ModelRequests
     }
 
     /**
@@ -21,6 +22,7 @@ class StudentService {
             videoLink
         }).save();
 
+        await this.ModelRequests.addStudent(student._id, videoLink);
         return student;
     }
 

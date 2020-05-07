@@ -20,6 +20,13 @@ class GroupValidation {
         }
     }
 
+    static async validateAttendanceExists(gropuId, attendanceId) {
+        const group = await Group.findById(gropuId);
+        let attendance = group.attendance.filter(a => a.equals(attendanceId))
+        if (attendance.length === 0)
+            throw new GPError.InvalidId(`Attedance doesn't exist`);
+    }
+
 }
 
 module.exports = GroupValidation;

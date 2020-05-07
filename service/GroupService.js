@@ -1,12 +1,13 @@
 class GroupService {
 
-    constructor(Group, mongoose, StudentGroup, SchemaValidation, GroupValidation, StudentValidation) {
+    constructor(Group, mongoose, StudentGroup, SchemaValidation, GroupValidation, StudentValidation, ModelRequests) {
         this.Group = Group;
         this.mongoose = mongoose;
         this.StudentGroup = StudentGroup;
         this.SchemaValidation = SchemaValidation;
         this.GroupValidation = GroupValidation;
         this.StudentValidation = StudentValidation;
+        this.ModelRequests = ModelRequests;
     }
 
     /**
@@ -61,6 +62,14 @@ class GroupService {
 
         return group;
     }
+
+    async addStudentsToFacesModel(groupId) {
+        await this.GroupValidation.validateGroupExistsAndReturn(groupId);
+        const group = await this.Group.findById(groupId).populate('students');
+        let students = [];
+        group.students.forEach(s => students.push(s.student));
+        await this.ModelRequests.createGroup(students, group.id);
+    }
     
     /**
      * Get the group students and push todays date in the attendance column
@@ -82,7 +91,7 @@ class GroupService {
         });
 
         await group.save();
-        return group;
+        return group.attendance;
     }
 
     /**
@@ -91,19 +100,20 @@ class GroupService {
      * 
      * @param {String} imageLink the student image
      */
-    async recordStudentAttendance(imageLink) {
-        // connect with the face recognition service here
-        // const response = await axios.post('/get-student', { image: imageLink });
-        // const studentId = response.data.studentId;
-        
+    async recordStudentAttendance(groupId, attendanceId, imageLink) {
+        await this.GroupValidation.validateGroupExistsAndReturn(groupId);
+        await this.GroupValidation.validateAttendanceExists(groupId, attendanceId);
+
+        const studentId = await this.ModelRequests.recordAttendance(groupId, imageLink);
         if (!studentId) {
             throw new this.GPError.ValidationError('Un recognized face');
         }
 
-        const student = await this.StudentGroup.findById(studentId);
+        const student = await this.StudentGroup.findOne({ student: studentId });
         student.attendance[0].attended = true;
 
         await student.save();
+        console.log(student)
         return student;
     }
 

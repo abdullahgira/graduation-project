@@ -8,13 +8,22 @@ const SchemaValidation = require('../validation/SchemaValidation');
 const GroupValidation = require('../validation/GroupValidation');
 const StudentValidation = require('../validation/StudentValidation');
 const GroupService = require('../service/GroupService');
+const ModelRequests = require('../model-requests');
 
 const { isOnlyDoctor } = require('../middleware/authorization');
 
 const storageConfig = require('../config/diskStorageConfigImage');
 const upload = multer({ storage: storageConfig });
 
-const groupService = new GroupService(Group, mongoose, StudentGroup, SchemaValidation, GroupValidation, StudentValidation);
+const groupService = new GroupService(
+    Group, 
+    mongoose, 
+    StudentGroup, 
+    SchemaValidation, 
+    GroupValidation, 
+    StudentValidation,
+    ModelRequests
+);
 
 router.use(isOnlyDoctor);
 
@@ -28,6 +37,11 @@ router.post('/:groupId/add', async (req, res) => {
     res.json(group);
 });
 
+router.get('/:groupId/done', async (req, res) => {
+    await groupService.addStudentsToFacesModel(req.params.groupId);
+    res.end();
+});
+
 router.get('/', async (req, res) => {
     const groups = await groupService.getGroups(req.user._id);
     res.json(groups);
@@ -38,9 +52,9 @@ router.post('/:groupId/new-attendance-record', async (req, res) => {
     res.json(group);
 });
 
-router.post('/:groupId/record-attendance', upload.single('image'), async (req, res) => {
+router.post('/:groupId/record-attendance/:attendanceId', upload.single('image'), async (req, res) => {
     const imageLink = req.file && `uploads/${req.file.filename}`;
-    const student = await groupService.recordStudentAttendance(imageLink);
+    const student = await groupService.recordStudentAttendance(req.params.groupId, req.params.attendanceId, imageLink);
     res.json(student);
 });
 
